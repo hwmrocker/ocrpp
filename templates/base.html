@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>{{ title|default('gladis.org') }}</title>
+</head>
+<body>
+    {% if navigation %}
+    <ul id="navigation">
+    {% for item in navigation %}
+        <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+    <h1>My Webpage</h1>
+{% block content %}{% endblock %}
+</body>
+</html>
