@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from flask import Flask, render_template, url_for, request, redirect, flash
-app = Flask(__name__)
+application = app = Flask(__name__)
 app.secret_key = '/lkasg;izb/sijgagAGkjzxBJLhBKzKzbFKgjadgF'
 
 def _get_chapters():
