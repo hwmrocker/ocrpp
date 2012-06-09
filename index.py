@@ -61,7 +61,7 @@ def _get_next_page():
     chapters = sorted([c for c in os.listdir("static") if os.path.isdir(os.path.join("static",c))])
     pages = []
     for c in chapters:
-        pages.extend(sorted([(c,p) for p in os.listdir(os.path.join("static", c)) if p.endswith('.png') and os.path.getmtime(os.path.join("static", c, p)) < maxtime]))
+        pages.extend(sorted([(c,p) for p in os.listdir(os.path.join("static", c)) if p.endswith('.png') and os.path.getmtime(os.path.join("static", c, p)) < maxtime and _is_finished(c,p)]))
         if len(pages) > 0:
             return pages[0]
     
