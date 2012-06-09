@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 from flask import Flask, render_template, url_for, request, redirect, flash
 application = app = Flask(__name__)
@@ -55,10 +56,25 @@ def _set_finished(chapter, page, fset=True):
         except:
             pass
 
+def _get_next_page():
+    maxtime = time.mktime(time.localtime()) - 15 * 60
+    chapters = sorted([c for c in os.listdir("static") if os.path.isdir(os.path.join("static",c))])
+    pages = []
+    for c in chapters:
+        pages.extend(sorted([(c,p) for p in os.listdir(os.path.join("static", c)) if p.endswith('.png') and os.path.getmtime(os.path.join("static", c, p)) < maxtime]))
+        if len(pages) > 0:
+            return pages[0]
+    
+
 @app.route('/')
 def hello_world():
     chapters = _get_chapters()
     return render_template('index.html', chapters=chapters)
+
+@app.route('/next')
+def next_page():
+    c,p = _get_next_page()
+    return redirect(url_for("show_page", chapter=c, page=p))
 
 @app.route('/kapitel/<chapter>/')
 def show_chapter(chapter):
@@ -84,9 +100,13 @@ def show_page(chapter, page):
     txt = _get_text(chapter, page)
 
     finished = _is_finished(chapter, page)
+    
+    os.utime(os.path.join("static", chapter, page), None)
 
     return render_template('page.html', img=img, text=txt, finished=finished)
 
 if __name__ == '__main__':
-    app.debug = False
+    app.debug = True
     app.run()
+else:
+    application = app
