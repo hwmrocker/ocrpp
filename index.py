@@ -88,5 +88,5 @@ def show_page(chapter, page):
     return render_template('page.html', img=img, text=txt, finished=finished)
 
 if __name__ == '__main__':
-    app.debug = True
+    app.debug = False
     app.run()
