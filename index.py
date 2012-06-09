@@ -61,7 +61,7 @@ def _get_next_page():
     chapters = sorted([c for c in os.listdir("static") if os.path.isdir(os.path.join("static",c))])
     pages = []
     for c in chapters:
-        pages.extend(sorted([(c,p) for p in os.listdir(os.path.join("static", c)) if p.endswith('.png') and os.path.getmtime(os.path.join("static", c, p)) < maxtime and _is_finished(c,p)]))
+        pages.extend(sorted([(c,p) for p in os.listdir(os.path.join("static", c)) if p.endswith('.png') and os.path.getmtime(os.path.join("static", c, p)) < maxtime and not _is_finished(c,p)]))
         if len(pages) > 0:
             return pages[0]
     
@@ -73,8 +73,16 @@ def hello_world():
 
 @app.route('/next')
 def next_page():
-    c,p = _get_next_page()
-    return redirect(url_for("show_page", chapter=c, page=p))
+    nextp = _get_next_page()
+    if nextp:
+        c,p =nextp
+        return redirect(url_for("show_page", chapter=c, page=p))
+    else:
+        return redirect(url_for("fertig"))
+
+@app.route('/geschafft')
+def fertig():
+    return render_template('fertig.html')
 
 @app.route('/kapitel/<chapter>/')
 def show_chapter(chapter):
