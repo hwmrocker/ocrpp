@@ -71,6 +71,14 @@ def hello_world():
     chapters = _get_chapters()
     return render_template('index.html', chapters=chapters)
 
+@app.route('/robots.txt')
+def robot():
+    return "User-agent: *\nDisallow: /"
+
+@app.route('/index.py/next/')
+def redirect_to_next():
+    return redirect(url_for('next_page'))
+
 @app.route('/next')
 def next_page():
     nextp = _get_next_page()
