@@ -79,6 +79,24 @@ def robot():
 def redirect_to_next():
     return redirect(url_for('next_page'))
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        next = request.form.get('next') or "/"
+        resp = redirect(next)
+        resp.set_cookie("user", request.form.get("user"))
+        return resp
+    else:
+        return render_template("login.html")
+        
+
+@app.route('/logout')
+def logout():
+    next = request.form.get('next') or "/"
+    resp = redirect(next)
+    resp.delete_cookie("user")
+    return resp
+
 @app.route('/next')
 def next_page():
     nextp = _get_next_page()
