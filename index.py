@@ -57,7 +57,7 @@ def _set_finished(chapter, page, fset=True):
             pass
 
 def _get_next_page():
-    maxtime = time.mktime(time.localtime()) - 15 * 60
+    maxtime = time.mktime(time.localtime()) - 60 * 60
     chapters = sorted([c for c in os.listdir("static") if os.path.isdir(os.path.join("static",c))])
     pages = []
     for c in chapters:
