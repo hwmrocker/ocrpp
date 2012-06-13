@@ -1,7 +1,7 @@
 import os
 import time
 from datetime import datetime
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, url_for, request, redirect, flash, session, abort
 application = app = Flask(__name__)
 app.secret_key = '/lkasg;izb/sijgagAGkjzxBJLhBKzKzbFKgjadgF'
 
@@ -45,10 +45,16 @@ def _is_finished(chapter, page, astr_t='checked="checked"', astr_f=""):
     else:
         return astr_f
 
+def _update_user_stats(chapter, page):
+    with open("static/userstats", "w") as userf:
+        userf.writer("%s|%s|%s\n" %(session.get("user", "-"), chapter, page))
+
 def _set_finished(chapter, page, fset=True):
     fn = os.path.join('static', chapter, page) + '.done'
     if fset:
-        open(fn, 'w')
+        if not os.path.isfile(fn):
+            open(fn, 'w')
+            _update_user_stats(chapter, page)
         flash("Seite als, Fertig markiert")
     else:
         try:
@@ -82,23 +88,24 @@ def redirect_to_next():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
-        next = request.form.get('next') or "/"
-        resp = redirect(next)
-        resp.set_cookie("user", request.form.get("user"))
-        return resp
+        next = request.args.get('next') or "/"
+        session["user"] = request.form.get("user")
+        return redirect(next)
     else:
         return render_template("login.html")
         
-
 @app.route('/logout')
 def logout():
-    next = request.form.get('next') or "/"
-    resp = redirect(next)
-    resp.delete_cookie("user")
-    return resp
+    next = request.args.get('next') or "/"
+    session.pop("user")
+    return redirect(next)
 
 @app.route('/next')
 def next_page():
+    if not session.get("user",""):
+        o = request._get_current_object()
+        return redirect(url_for("login", next=request.path))
+
     nextp = _get_next_page()
     if nextp:
         c,p =nextp
