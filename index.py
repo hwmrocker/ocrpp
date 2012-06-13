@@ -46,7 +46,7 @@ def _is_finished(chapter, page, astr_t='checked="checked"', astr_f=""):
         return astr_f
 
 def _update_user_stats(chapter, page):
-    with open("static/userstats", "w") as userf:
+    with open("static/userstats", "a") as userf:
         userf.write("%s|%s|%s\n" %(session.get("user", "-"), chapter, page))
 
 def _set_finished(chapter, page, fset=True):
