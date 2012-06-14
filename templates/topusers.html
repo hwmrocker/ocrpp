@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<ol>
+{% for user, count in userlist %}
+<li{% if session.user == user %} class="itsme"{% endif %}>{{ user }} ({{ count }})</li>
+{% endfor %}
+</ol>
+{% endblock %}

@@ -20,11 +20,14 @@
     </ul>
   {% endif %}
 {% endwith %}
+<p>
 {% if session.user %}
-    <p>Hallo {{ session.user }}! <a href="{{url_for('logout')}}">Logout</a></p>
+    Hallo {{ session.user }}! <a href="{{url_for('logout')}}">Logout</a>
 {% else %}
     <a href="{{url_for('login')}}">Login</a>
 {% endif %}
+ <a href="{{url_for('topuser')}}" style="margin-left: 30px">Top User Liste</a>
+</p>
     <h1><a href="{{ url_for('next_page')  }}">Nächste Seite</a></h1>
 {% block content %}{% endblock %}
 </body>

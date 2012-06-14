@@ -1,5 +1,6 @@
 import os
 import time
+from collections import Counter
 from datetime import datetime
 from flask import Flask, render_template, url_for, request, redirect, flash, session, abort
 application = app = Flask(__name__)
@@ -71,6 +72,17 @@ def _get_next_page():
         if len(pages) > 0:
             return pages[0]
     
+@app.route('/topuser')
+def topuser():
+    userlist = []
+    with open("static/userstats") as userf:
+        for line in userf.readlines():
+            user = line.split("|")[0].strip()
+            if user != "":
+                userlist.append(user)
+
+    cnt=Counter(userlist)
+    return render_template("topusers.html", userlist=cnt.most_common())
 
 @app.route('/')
 def hello_world():
